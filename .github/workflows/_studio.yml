@@ -1,33 +1,38 @@
-name: Astro Studio
+name: Build and Release
 
 env:
-  ASTRO_STUDIO_APP_TOKEN: ${{secrets.ASTRO_STUDIO_APP_TOKEN }}
+  ASTRO_STUDIO_APP_TOKEN: ${{ secrets.ASTRO_STUDIO_APP_TOKEN }}
 
 on:
   push:
-
-  pull_request:
-    types: [opened, reopened, synchronize]
+    branches:
+      - main
 
 jobs:
-  DB:
-    permissions:
-      contents: read
-      actions: read
-      pull-requests: write
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: 20
-      - uses: jaid/action-npm-install@v1.2.1
-      - name: Check if ASTRO_STUDIO_APP_TOKEN is set
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Release to Astro Studio
+        env:
+          ASTRO_STUDIO_APP_TOKEN: ${{ secrets.ASTRO_STUDIO_APP_TOKEN }}
         run: |
-          if [ -z "$ASTRO_STUDIO_APP_TOKEN" ]; then
-            echo "ASTRO_STUDIO_APP_TOKEN is not set"
-          else
-            echo "ASTRO_STUDIO_APP_TOKEN is set"
-          fi
-      - uses: withastro/action-studio@main
-      
+          echo "Deploying to Astro Studio..."
+          # Add your deployment/release commands here
