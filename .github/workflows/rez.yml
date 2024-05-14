@@ -1,4 +1,4 @@
-name: Astro Studio
+name: rez Astro Studio
 
 env:
   ASTRO_STUDIO_APP_TOKEN: ${{secrets.ASTRO_STUDIO_APP_TOKEN }}
@@ -8,6 +8,12 @@ on:
 
   pull_request:
     types: [opened, reopened, synchronize]
+
+# Allow this job to clone the repo and create a page deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   DB:
