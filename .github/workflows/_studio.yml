@@ -23,4 +23,12 @@ jobs:
         with:
           node-version: 20
       - uses: jaid/action-npm-install@v1.2.1
+      - name: Check if ASTRO_STUDIO_APP_TOKEN is set
+        run: |
+          if [ -z "$ASTRO_STUDIO_APP_TOKEN" ]; then
+            echo "ASTRO_STUDIO_APP_TOKEN is not set"
+          else
+            echo "ASTRO_STUDIO_APP_TOKEN is set"
+          fi
       - uses: withastro/action-studio@main
+      
